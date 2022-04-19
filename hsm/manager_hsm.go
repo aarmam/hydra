@@ -50,7 +50,7 @@ func (m *KeyManager) GenerateAndPersistKeySet(_ context.Context, set, kid, alg, 
 	m.Lock()
 	defer m.Unlock()
 
-	err := m.deleteExistingKeySet(set)
+	err := m.deleteExistingKeySet(set, kid)
 	if err != nil {
 		return nil, err
 	}
@@ -271,8 +271,8 @@ func getKeyPairAttributes(kid string, set string, use string) (crypto11.Attribut
 	return privateAttrSet, publicAttrSet, nil
 }
 
-func (m *KeyManager) deleteExistingKeySet(set string) error {
-	existingKeyPairs, err := m.FindKeyPairs(nil, []byte(set))
+func (m *KeyManager) deleteExistingKeySet(set, kid string) error {
+	existingKeyPairs, err := m.FindKeyPairs([]byte(kid), []byte(set))
 	if err != nil {
 		return err
 	}
